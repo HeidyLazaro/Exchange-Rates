@@ -17,8 +17,11 @@ class ExchangeRateRepository(context: Context) {
     private val dao: ExchangeRateDao
 
     init {
+        //Obtiene la bd insertandto el contexto de la aplicacion
         val db = AppDatabase.getDatabase(context)
+        //Instanciar la bd
         dao = db.exchangeRateDao()
+
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://v6.exchangerate-api.com/")

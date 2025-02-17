@@ -15,9 +15,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Programar WorkManager para sincronizar cada hora
-        val workRequest = PeriodicWorkRequestBuilder<CurrencySyncWorker>(1, TimeUnit.HOURS).build()
+        val workRequest = PeriodicWorkRequestBuilder<CurrencySyncWorker>(
+            1, TimeUnit.HOURS // Se ejecutará cada 1 hora
+        )
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED) // Solo si hay Internet
+                    .build()
+            )
+            .build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "currency_sync",
+            "CurrencySyncWorker",
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )

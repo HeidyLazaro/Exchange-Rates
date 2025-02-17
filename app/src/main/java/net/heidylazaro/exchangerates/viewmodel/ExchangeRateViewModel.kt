@@ -21,6 +21,7 @@ class ExchangeRateViewModel(application: Application) : AndroidViewModel(applica
 
     init {
         viewModelScope.launch {
+            //Inicializa
             repository.syncExchangeRates()
         }
     }
