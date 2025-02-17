@@ -5,9 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import net.heidylazaro.exchangerates.data.ExchangeRate
+import net.heidylazaro.exchangerates.data.UpdateInfo
 import net.heidylazaro.exchangerates.model.ExchangeRateDao
 
-@Database(entities = [ExchangeRate::class], version = 1)
+@Database(entities = [ExchangeRate::class, UpdateInfo::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun exchangeRateDao(): ExchangeRateDao
 

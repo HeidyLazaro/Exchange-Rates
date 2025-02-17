@@ -15,18 +15,25 @@ import net.heidylazaro.exchangerates.viewmodel.ExchangeRateViewModel
 @Composable
 fun ExchangeRateScreen(viewModel: ExchangeRateViewModel) {
     val rates by viewModel.exchangeRates.observeAsState(initial = emptyList())
-
+    val updateInfo by viewModel.updateInfo.observeAsState()
 
     Scaffold(topBar = { TopAppBar(title = { Text("Tasas de Cambio") }) }) {
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
-            items(rates) { rate ->
-                Card(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    elevation = 4.dp
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Moneda: ${rate.currency}", style = MaterialTheme.typography.h6)
-                        Text("Tasa: ${rate.rate}", style = MaterialTheme.typography.body1)
+        Column(modifier = Modifier.padding(16.dp)) {
+            updateInfo?.let {
+                Text("Última Actualización: ${it.lastUpdateUtc}", style = MaterialTheme.typography.body2)
+                Text("Próxima Actualización: ${it.nextUpdateUtc}", style = MaterialTheme.typography.body2)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn {
+                items(rates) { rate ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        elevation = 4.dp
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("Moneda: ${rate.currency}", style = MaterialTheme.typography.h6)
+                            Text("Tasa: ${rate.rate}", style = MaterialTheme.typography.body1)
+                        }
                     }
                 }
             }

@@ -8,3 +8,12 @@ data class ExchangeRate(
     @PrimaryKey val currency: String,
     val rate: Double
 )
+
+@Entity(tableName = "update_info")
+data class UpdateInfo(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val lastUpdateUnix: Long,
+    val lastUpdateUtc: String,
+    val nextUpdateUnix: Long,
+    val nextUpdateUtc: String
+)

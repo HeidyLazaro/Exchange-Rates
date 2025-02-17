@@ -32,13 +32,18 @@ class ExchangeRateRepository(context: Context) {
         withContext(Dispatchers.IO) {
             try {
                 val response = api.getExchangeRates()
-                // Log para ver si Retrofit trajo datos
                 Log.d("API_RESPONSE", "Datos obtenidos: ${response.rates}")
                 if (response.rates.isNotEmpty()) {
                     val ratesList = response.rates.map { ExchangeRate(it.key, it.value) }
 
                     // Insertar en SQLite
                     dao.insertRates(ratesList)
+                    dao.insertUpdateInfo(UpdateInfo(
+                        lastUpdateUnix = response.lastUpdateUnix,
+                        lastUpdateUtc = response.lastUpdateUtc,
+                        nextUpdateUnix = response.nextUpdateUnix,
+                        nextUpdateUtc = response.nextUpdateUtc
+                    ))
 
                     Log.d("DATABASE", "Datos insertados en SQLite")
                 } else {
@@ -51,4 +56,5 @@ class ExchangeRateRepository(context: Context) {
     }
 
     fun getExchangeRates() = dao.getAllRates()
+    fun getLatestUpdateInfo() = dao.getLatestUpdateInfo()
 }
