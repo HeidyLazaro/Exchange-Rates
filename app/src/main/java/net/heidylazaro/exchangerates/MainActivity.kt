@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Programar WorkManager para sincronizar cada hora
+        //WorkManager para sincronizar cada hora
         val workRequest = PeriodicWorkRequestBuilder<CurrencySyncWorker>(
             1, TimeUnit.HOURS // Se ejecutará cada 1 hora
         )
