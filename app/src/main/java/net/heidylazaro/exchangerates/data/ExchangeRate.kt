@@ -15,5 +15,6 @@ data class UpdateInfo(
     val lastUpdateUnix: Long,
     val lastUpdateUtc: String,
     val nextUpdateUnix: Long,
-    val nextUpdateUtc: String
+    val nextUpdateUtc: String,
+    val actualUpdate: String
 )

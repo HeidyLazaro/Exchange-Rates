@@ -10,6 +10,10 @@ import net.heidylazaro.exchangerates.AppDatabase
 import net.heidylazaro.exchangerates.model.ExchangeRateDao
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class ExchangeRateRepository(context: Context) {
 
@@ -39,13 +43,17 @@ class ExchangeRateRepository(context: Context) {
                 if (response.rates.isNotEmpty()) {
                     val ratesList = response.rates.map { ExchangeRate(it.key, it.value) }
 
+                    val currentLocalTime = SimpleDateFormat("yyyy-MM-dd' T 'HH:mm:ss", Locale.getDefault()).apply {
+                    }.format(Date())
+
                     // Insertar en SQLite
                     dao.insertRates(ratesList)
                     dao.insertUpdateInfo(UpdateInfo(
                         lastUpdateUnix = response.lastUpdateUnix,
                         lastUpdateUtc = response.lastUpdateUtc,
                         nextUpdateUnix = response.nextUpdateUnix,
-                        nextUpdateUtc = response.nextUpdateUtc
+                        nextUpdateUtc = response.nextUpdateUtc,
+                        actualUpdate = currentLocalTime
                     ))
 
                     Log.d("DATABASE", "Datos insertados en SQLite")
