@@ -41,10 +41,18 @@ class ExchangeRateRepository(context: Context) {
                 val response = api.getExchangeRates()
                 Log.d("API_RESPONSE", "Datos obtenidos: ${response.rates}")
                 if (response.rates.isNotEmpty()) {
-                    val ratesList = response.rates.map { ExchangeRate(it.key, it.value) }
+                    // Obtenemos la fecha UTC de la respuesta de la API
 
-                    val currentLocalTime = SimpleDateFormat("yyyy-MM-dd' T 'HH:mm:ss", Locale.getDefault()).apply {
-                    }.format(Date())
+
+                    val actualUpdateTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
+                    }.format(Date()).toString()
+
+                    val ratesList = response.rates.map { ExchangeRate(
+                        currency = it.key,  // Moneda
+                        rate = it.value,    // Tipo de cambio
+                        lastUpdateUnix = response.lastUpdateUnix,  // Fecha UTC de la respuesta
+                        lastUpdateUtc = actualUpdateTime  // Fecha local de actualización
+                         ) }
 
                     // Insertar en SQLite
                     dao.insertRates(ratesList)
@@ -53,7 +61,7 @@ class ExchangeRateRepository(context: Context) {
                         lastUpdateUtc = response.lastUpdateUtc,
                         nextUpdateUnix = response.nextUpdateUnix,
                         nextUpdateUtc = response.nextUpdateUtc,
-                        actualUpdate = currentLocalTime
+                        actualUpdate = actualUpdateTime
                     ))
 
                     Log.d("DATABASE", "Datos insertados en SQLite")
