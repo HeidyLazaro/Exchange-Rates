@@ -17,7 +17,7 @@ interface ExchangeRateDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUpdateInfo(updateInfo: UpdateInfo)
 
-    @Query("SELECT * FROM exchange_rates")
+    @Query("SELECT * FROM exchange_rates ORDER BY lastUpdateUtc DESC")
     fun getAllRates(): Flow<List<ExchangeRate>>
 
     @Query("SELECT * FROM update_info ORDER BY id DESC LIMIT 1")

@@ -60,6 +60,16 @@ fun ExchangeRateScreen(navController: NavController, viewModel: ExchangeRateView
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ExchangeRateChartScreen(currency: String, rates: List<ExchangeRate>) {
+    val sortedRates = rates.sortedBy { it.lastUpdateUnix } // Ordena por fecha ascendente
+
+    val latestRate = sortedRates.lastOrNull()?.rate ?: "No disponible"  // Último valor de la tasa
+    val dateRange = if (sortedRates.isNotEmpty()) {
+        "${sortedRates.first().lastUpdateUtc} - ${sortedRates.last().lastUpdateUtc}"
+    } else {
+        "No hay datos"
+    }
+
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Gráfico de $currency") })
@@ -71,11 +81,17 @@ fun ExchangeRateChartScreen(currency: String, rates: List<ExchangeRate>) {
                 .padding(16.dp)
         ) {
             Text("Moneda: $currency", style = MaterialTheme.typography.h6)
+            Text("Tasa Actual: $latestRate", style = MaterialTheme.typography.body1)
             Spacer(modifier = Modifier.height(8.dp))
             Text("Rango de fechas: ${rates.firstOrNull()?.lastUpdateUtc} - ${rates.lastOrNull()?.lastUpdateUtc}")
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            /*if (rates.isNotEmpty()) {
+                ExchangeRateChart(rates)  // Aquí se muestra el gráfico
+            } else {
+                Text("No hay datos disponibles para esta moneda.", style = MaterialTheme.typography.body2)
+            }*/
             // Aquí irá la función para dibujar el gráfico
             //ExchangeRateGraph(rates)
         }
