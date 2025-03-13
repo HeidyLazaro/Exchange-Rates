@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.*
+import net.heidylazaro.exchangerates.ui.theme.AppNavigation
 import net.heidylazaro.exchangerates.ui.theme.ExchangeRateScreen
 import net.heidylazaro.exchangerates.viewmodel.ExchangeRateViewModel
 import net.heidylazaro.exchangerates.worker.CurrencySyncWorker
@@ -32,7 +33,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel: ExchangeRateViewModel = viewModel()
-            ExchangeRateScreen(viewModel)
+           // ExchangeRateScreen(viewModel)
+            AppNavigation(viewModel)
         }
     }
 }

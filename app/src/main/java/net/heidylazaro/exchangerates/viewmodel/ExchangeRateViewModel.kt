@@ -25,4 +25,8 @@ class ExchangeRateViewModel(application: Application) : AndroidViewModel(applica
             repository.syncExchangeRates()
         }
     }
+
+    fun getRatesForCurrency(currency: String): List<ExchangeRate> {
+        return exchangeRates.value?.filter { it.currency == currency } ?: emptyList()
+    }
 }
