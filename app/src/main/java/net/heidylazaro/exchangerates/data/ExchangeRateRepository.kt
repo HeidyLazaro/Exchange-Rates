@@ -14,8 +14,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import android.net.Uri
+import android.database.Cursor
 
-class ExchangeRateRepository(context: Context) {
+class ExchangeRateRepository(private val context: Context) {
 
     private val api: ExchangeRateApi
     private val dao: ExchangeRateDao
@@ -76,4 +78,29 @@ class ExchangeRateRepository(context: Context) {
 
     fun getExchangeRates() = dao.getAllRates()
     fun getLatestUpdateInfo() = dao.getLatestUpdateInfo()
+
+    /*@Suppress("UNREACHABLE_CODE")
+    fun getExchangeRatesFromProvider(currency: String, startDate: String, endDate: String): List<ExchangeRate> {
+        val uri = Uri.parse("content://net.heidylazaro.exchangerates.contentprovider/exchange_rates/$currency/$startDate/$endDate")
+
+        // Asegurarse de que el contentResolver no es nulo
+        val contentResolver = context.contentResolver ?: return emptyList()
+
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        val rates = mutableListOf<ExchangeRate>()
+
+        cursor?.use {
+            while (it.moveToNext()) {
+                val currency = it.getString(it.getColumnIndexOrThrow("currency"))
+                val rate = it.getDouble(it.getColumnIndexOrThrow("rate"))
+                val lastUpdateUnix = it.getLong(it.getColumnIndexOrThrow("lastUpdateUnix"))
+                val lastUpdateUtc = it.getString(it.getColumnIndexOrThrow("lastUpdateUtc"))
+
+                rates.add(ExchangeRate(currency = currency, rate = rate, lastUpdateUnix = lastUpdateUnix, lastUpdateUtc = lastUpdateUtc))
+            }
+        }
+
+        return rates
+    }*/
+
 }

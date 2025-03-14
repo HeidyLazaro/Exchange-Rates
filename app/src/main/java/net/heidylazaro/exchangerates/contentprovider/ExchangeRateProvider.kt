@@ -100,7 +100,6 @@ class ExchangeRateProvider : ContentProvider() {
         TODO("Not yet implemented")
         //No se usan
     }
-
     override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
         TODO("Not yet implemented")
     }

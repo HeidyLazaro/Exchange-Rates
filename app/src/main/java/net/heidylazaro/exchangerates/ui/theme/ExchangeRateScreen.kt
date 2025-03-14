@@ -1,30 +1,22 @@
 package net.heidylazaro.exchangerates.ui.theme
 
 import android.annotation.SuppressLint
-import android.widget.Toast
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import net.heidylazaro.exchangerates.data.ExchangeRate
 import net.heidylazaro.exchangerates.viewmodel.ExchangeRateViewModel
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ExchangeRateScreen(navController: NavController, viewModel: ExchangeRateViewModel) {
+fun ExchangeRateScreen(/*navController: NavController, */viewModel: ExchangeRateViewModel) {
     val rates by viewModel.exchangeRates.observeAsState(initial = emptyList())
     val updateInfo by viewModel.updateInfo.observeAsState()
 
@@ -39,11 +31,11 @@ fun ExchangeRateScreen(navController: NavController, viewModel: ExchangeRateView
                 items(rates) { rate ->
                     Card(
                         modifier = Modifier.fillMaxWidth().padding(8.dp)
-                        .clickable {
+                       /* .clickable {
                         // Navegar a la pantalla de la gráfica pasando los datos
                         navController.navigate("chart/${rate.currency}")
-                            //Toast("")
-                    },
+                    }*/
+                        ,
                         elevation = 4.dp
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -57,18 +49,17 @@ fun ExchangeRateScreen(navController: NavController, viewModel: ExchangeRateView
     }
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+/*@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ExchangeRateChartScreen(currency: String, rates: List<ExchangeRate>) {
+fun ExchangeRateChartScreen(currency: String, rates: List<ExchangeRate>, viewModel: ExchangeRateViewModel) {
     val sortedRates = rates.sortedBy { it.lastUpdateUnix } // Ordena por fecha ascendente
 
     val latestRate = sortedRates.lastOrNull()?.rate ?: "No disponible"  // Último valor de la tasa
-    val dateRange = if (sortedRates.isNotEmpty()) {
-        "${sortedRates.first().lastUpdateUtc} - ${sortedRates.last().lastUpdateUtc}"
-    } else {
-        "No hay datos"
-    }
 
+    val exchangeRates by viewModel.providerExchangeRates.observeAsState(emptyList())
+
+    // Llamar a la función para obtener datos del ContentProvider
+    viewModel.fetchExchangeRatesFromProvider("USD", "2024-03-01", "2024-03-10")
 
     Scaffold(
         topBar = {
@@ -87,13 +78,8 @@ fun ExchangeRateChartScreen(currency: String, rates: List<ExchangeRate>) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            /*if (rates.isNotEmpty()) {
-                ExchangeRateChart(rates)  // Aquí se muestra el gráfico
-            } else {
-                Text("No hay datos disponibles para esta moneda.", style = MaterialTheme.typography.body2)
-            }*/
-            // Aquí irá la función para dibujar el gráfico
-            //ExchangeRateGraph(rates)
+
+            ExchangeRateGraph()
         }
     }
 }
@@ -109,10 +95,41 @@ fun AppNavigation(viewModel: ExchangeRateViewModel) {
         composable("chart/{currency}") { backStackEntry ->
             val currency = backStackEntry.arguments?.getString("currency") ?: ""
             val rates = viewModel.getRatesForCurrency(currency)
-            ExchangeRateChartScreen(currency, rates)
+            ExchangeRateChartScreen(currency, rates, viewModel)
         }
     }
 }
+
+@Composable
+fun ExchangeRateGraph(rates: List<ExchangeRate>){
+    if (rates.isEmpty()) return
+
+    val maxRate = rates.maxOfOrNull { it.rate } ?: return
+    val minRate = rates.minOfOrNull { it.rate } ?: return
+
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val width = size.width
+        val height = size.height
+
+        val scaleX = width / rates.size
+        val scaleY = height / (maxRate - minRate)
+
+        rates.forEachIndexed { index, rate ->
+            val x = index * scaleX
+            val y = (maxRate - rate.rate) * scaleY
+            if (index > 0) {
+                val prevX = (index - 1) * scaleX
+                val prevY = (maxRate - rates[index - 1].rate) * scaleY
+                drawLine(
+                    start = Offset(prevX, prevY),
+                    end = Offset(x, y),
+                    color = Color.Blue,
+                    strokeWidth = 2f
+                )
+            }
+        }
+    }
+}*/
 
 
 
